@@ -81,7 +81,15 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        if visited is None:
+            visited = set()
+
+        print(starting_vertex)
+        visited.add(starting_vertex)
+
+        for neighbor in self.get_neighbors(starting_vertex):
+            if neighbor not in visited:
+                self.dft_recursive(neighbor, visited)
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -89,7 +97,29 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        q = Queue()
+        visited = set()
+
+        q.enqueue([starting_vertex])
+
+        while q.size > 0:
+            path = q.dequeue()
+            
+            v = path [-1]
+
+            if v not in visited:
+                if v == destination_vertex:
+                    return path
+
+                visited.add(v)
+
+                for neighbor in self.get_neighbors(v):
+                    new_path = path + [neighbor]
+                    q.enqueue(new_path)
+
+        return None
+
+
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -97,7 +127,26 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        q = Stack()
+        visited = set()
+
+        q.push([starting_vertex])
+
+        while q.size() > 0:
+            path = q.pop()
+            v = path[-1]
+
+            if v not in visited:
+                if v == destination_vertex:
+                    return path
+
+                visited.add(v)
+
+                for neighbor in self.get_neighbors(v):
+                    new_path = path + [neighbor]
+                    q.push(new_path)
+
+        return None
 
     def dfs_recursive(self, starting_vertex, destination_vertex):
         """
