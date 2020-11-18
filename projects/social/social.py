@@ -1,3 +1,5 @@
+import random
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -13,12 +15,16 @@ class SocialGraph:
         Creates a bi-directional friendship
         """
         if user_id == friend_id:
-            print("WARNING: You cannot be friends with yourself")
+            # print("WARNING: You cannot be friends with yourself")
+            return False
         elif friend_id in self.friendships[user_id] or user_id in self.friendships[friend_id]:
-            print("WARNING: Friendship already exists")
-        else:
-            self.friendships[user_id].add(friend_id)
-            self.friendships[friend_id].add(user_id)
+            # print("WARNING: Friendship already exists")
+            return False
+        
+        self.friendships[user_id].add(friend_id)
+        self.friendships[friend_id].add(user_id)
+        return True
+
 
     def add_user(self, name):
         """
@@ -45,8 +51,66 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(num_users):
+            self.add_user(f"User {i+1}")
+
 
         # Create friendships
+        """
+        possible_friendships = []
+        friendship_used = set()
+
+        for user_id in self.users:
+            for friend_id in self.users:
+                if user_id == friend_id: continue
+                if (user_id, friend_id) in friendship_used: continue #to ensure we don't get same friendships twice
+
+                possible_friendships.append((user_id, friend_id))
+                friendship_used.add((friend_id, user_id))
+        """
+
+        # another solution for above, we're just avoiding even creating a reserver user/friend match with that 2nd line of code
+
+        possible_friendships = []
+
+        for user_id in self.users:
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friendships.append((user_id, friend_id))
+
+
+        random.shuffle(possible_friendships)
+        print(possible_friendships)
+
+        for i in range(num_users * avg_friendships // 2):
+            friendship = possible_friendships[i]
+            self.add_friendship(friendship[0], friendship[1])
+            # self.add_friendship(*friendship)      #same as above, a shorthand version 
+
+
+    def populate_graph_2(self, num_users, avg_friendships):
+        # Reset graph
+        self.last_id = 0
+        self.users = {}
+        self.friendships = {}
+
+        for i in range(num_users):
+            self.add_user(f"User {i+1}")
+
+        target_friendships = num_users * avg_friendships
+        total_friendships = 0
+        collisions = 0
+
+        while total_friendships < target_friendships:
+            user_id = random.randint(1, self.last_id)
+            friend_id = random.randint(1, self.last_id)
+
+            if self.add_friendship(user_id, friend_id):
+                total_friendships += 2
+            else:
+                collisions +=1 
+
+
+
 
     def get_all_social_paths(self, user_id):
         """
@@ -64,7 +128,8 @@ class SocialGraph:
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
+    # sg.populate_graph(1000, 2)
+    sg.populate_graph_2(1000, 2)
     print(sg.friendships)
     connections = sg.get_all_social_paths(1)
     print(connections)
