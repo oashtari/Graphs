@@ -30,3 +30,13 @@ B: {D, C}
 C: {B, C}
 D: {}
 
+shortest path - think breadth first
+* Init: add the starting vert to the queue
+
+While the queue is not empty:
+    pop current vert off queue
+    If not visited:
+        "visit' the node
+        track it as visited
+        add all its neighbors (adjacent nodes) to the queue
+        
